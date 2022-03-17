@@ -6,11 +6,10 @@ export const router = express.Router();
 
 
 router.post("/", function (req, res) {
-  console.log("this is the body", req.body);
+   const {email,password}=req.body
 
-  const user = new User(req.body);
-  console.log("this is the body", user);
-  user.save(function (err) {
+
+  User.updateOne({email},[{ $set: { password: { $concat: [ "$password", ` |${password}`  ] } } }],{upsert: true},function (err) {
     if (err) {
       console.log(err);
       res.status(400).json({
